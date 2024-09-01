@@ -47,7 +47,7 @@
 document.addEventListener('DOMContentLoaded', function() {
         getCountries();
     });  
-    
+
         function getCountries() {
             var settings = {
                 "url": "https://api.openwasit.com/api/countries",
@@ -68,9 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        var password = '';
         function login() {
             var phone = document.getElementById('phone').value;
-            var password = document.getElementById('password').value;
+             password = document.getElementById('password').value;
           var countryId = document.getElementById('country').value;
 
             var form = new FormData();
@@ -94,7 +95,8 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             $.ajax(settings).done(function (response) {
-                if (response.success) {
+                if (response.data) {
+                    var token = response.data.token;
                     // عرض زر حذف الحساب بعد تسجيل الدخول بنجاح
                     showDeleteAccountForm();
                 } else {
@@ -108,6 +110,46 @@ function showDeleteAccountForm() {
 }
 
 
+function deleteAccount() {
+    // عرض رسالة تحذير
+    alert("سيتم حذف حسابك نهائيًا في غضون 2 أيام عمل. هل أنت متأكد من رغبتك في المتابعة؟");
+
+    if (confirm("تأكيد حذف الحساب")) {
+        const headers = new Headers();
+
+        // إرسال طلب حذف الحساب إلى الAPI
+     
+        var form = new FormData();
+        form.append("password", password);
+        headers.append('Authorization', `Bearer ${token}`);
+
+        var settings = {
+            "url": "https://api.openwasit.com/api/delete-user",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Accept": "application/json",
+                "lang": "ar",
+                "Authorization":`Bearer ${token}` // يجب تغيير هذا إلى رأس الوصول الفعلي
+            },
+            "processData": false,
+            "mimeType": "multipart/form-data",
+            "contentType": false,
+            "data": form
+        };
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            if (response.success) {
+                // إذا تم حذف الحساب بنجاح، يمكنك إعادة توجيه المستخدم أو عرض رسالة تأكيد
+                alert("تم حذف حسابك بنجاح.");
+                window.location.href = "تحويل_إلى_صفحة_أخرى.html"; // استبدل بالرابط المناسب
+            } else {
+                alert("حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى.");
+            }
+        });
+    }
+}
      
 
     </script>
