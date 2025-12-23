@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onDrive - تطبيق النقل التشاركي المصري</title>
+    
+    <!-- خطوط جوجل العربية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- مكتبة AOS للانيميشن عند التمرير -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- إعدادات تخصيص الألوان والخطوط -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0F4C81',   /* أزرق نيلي وقور */
+                            orange: '#F57F20', /* برتقالي دافئ وحيوي */
+                            light: '#F8FAFC',
+                            dark: '#1E293B'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Cairo', 'sans-serif'],
+                        body: ['Almarai', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1572252009286-268acec5ca0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+                        'islamic-pattern': "url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* تحسينات إضافية */
+        body {
+            font-family: 'Almarai', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cairo', sans-serif;
+        }
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        /* تأثير التدرج على الصورة الرئيسية */
+        .hero-overlay {
+            background: linear-gradient(90deg, rgba(15, 76, 129, 0.9) 0%, rgba(15, 76, 129, 0.7) 60%, rgba(245, 127, 32, 0.2) 100%);
+        }
+        /* أنيميشن طفو بسيط للهاتف */
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        /* لمعالجة التمرير الأفقي وضمان Mobile First */
+        .container-padding {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        @media (min-width: 640px) {
+            .container-padding {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .container-padding {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-brand-light text-brand-dark overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto container-padding">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2" data-aos="fade-down">
+                    <div class="w-10 h-10 bg-brand-orange rounded-xl flex items-center justify-center text-white text-xl font-bold transform -rotate-6">
+                        <i class="fa-solid fa-car-side"></i> 
+                    </div>
+                    <span class="font-heading font-black text-2xl text-brand-blue tracking-wide">onDrive</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 space-x-reverse items-center" data-aos="fade-down" data-aos-delay="200">
+                    <a href="#home" class="text-gray-600 hover:text-brand-orange font-medium transition">الرئيسية</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-brand-orange font-medium transition">إزاي بيشتغل؟</a>
+                    <a href="#features" class="text-gray-600 hover:text-brand-orange font-medium transition">ميزاتنا</a>
+                    <a href="#drivers" class="text-gray-600 hover:text-brand-orange font-medium transition">انضم ككابتن</a>
+                    <button class="bg-brand-blue hover:bg-brand-orange text-white px-6 py-2 rounded-full font-bold transition duration-300 shadow-lg transform hover:-translate-y-1">
+                        حمّل التطبيق
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-brand-blue hover:text-brand-orange focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-brand-orange hover:bg-gray-50">الرئيسية</a>
+                <a href="#how-it-works" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-brand-orange hover:bg-gray-50">إزاي بيشتغل؟</a>
+                <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-brand-orange hover:bg-gray-50">ميزاتنا</a>
+                <a href="#drivers" class="block px-3 py-2 rounded-md text-base font-medium text-brand-blue hover:bg-gray-50">يا كابتن</a>
+                <button class="w-full mt-2 bg-brand-orange text-white px-6 py-3 rounded-lg font-bold">
+                    حمّل التطبيق
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-24 pb-12 md:pt-32 md:pb-24 overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-hero-pattern bg-cover bg-center"></div>
+            <div class="absolute inset-0 hero-overlay"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto container-padding flex flex-col-reverse lg:flex-row items-center">
+            
+            <!-- Image/Mockup Content (Order 1 on Mobile) -->
+            <div class="w-full lg:w-1/2 flex justify-center lg:justify-end relative mt-10 lg:mt-0" data-aos="fade-up" data-aos-duration="1000">
+                <!-- Abstract blobs behind phone (Adjusted for better mobile fit) -->
+                <div class="hidden md:block absolute top-0 right-10 w-64 h-64 bg-brand-orange rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+                <div class="hidden md:block absolute bottom-0 left-10 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+                
+                <!-- Phone Mockup -->
+                <div class="relative w-[280px] sm:w-[320px] border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] shadow-2xl float-anim">
+                    <!-- Phone hardware details -->
+                    <div class="h-[32px] w-[3px] bg-gray-800 absolute -left-[17px] top-[72px] rounded-l-lg"></div>
+                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
+                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[178px] rounded-l-lg"></div>
+                    <div class="h-[64px] w-[3px] bg-gray-800 absolute -right-[17px] top-[142px] rounded-r-lg"></div>
+                    
+                    <div class="rounded-[2rem] overflow-hidden w-full h-full bg-white relative">
+                        <!-- Mockup Screen Content -->
+                        <div class="bg-brand-blue h-1/3 w-full p-4 flex flex-col justify-end text-white relative">
+                             <div class="absolute top-4 w-full text-center font-bold">onDrive</div>
+                             <h3 class="text-2xl font-bold mb-2">صباح الفل،<br>رايح فين؟</h3>
+                        </div>
+                        <div class="p-4 -mt-6">
+                            <div class="bg-white rounded-xl shadow-lg p-4 space-y-4">
+                                <div class="flex items-center gap-3 border-b pb-3">
+                                    <div class="w-2 h-2 rounded-full bg-brand-blue"></div>
+                                    <span class="text-gray-400 text-sm">منين هتركب؟</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-brand-orange"></div>
+                                    <span class="text-gray-800 font-bold">ميدان التحرير</span>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg border border-brand-orange/30">
+                                    <label class="text-xs text-gray-500 block mb-1">سعرك المقترح (جنية)</label>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-xl text-brand-blue">45.00</span>
+                                        <span class="text-xs text-brand-orange bg-brand-orange/10 px-2 py-1 rounded">سعر عادل</span>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-brand-blue text-white py-3 rounded-lg font-bold text-sm shadow-md hover:bg-brand-orange transition duration-300">
+                                    يلا بينا
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Map Background placeholder -->
+                        <div class="absolute bottom-0 w-full h-1/3 bg-gray-100 opacity-50 flex items-center justify-center">
+                            <i class="fa-solid fa-map text-6xl text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Content (Order 2 on Mobile) -->
+            <div class="w-full lg:w-1/2 text-center lg:text-right text-white mt-10 lg:mt-0" data-aos="fade-right" data-aos-duration="1000">
+                <span class="inline-block bg-brand-orange/20 border border-brand-orange/40 backdrop-blur-sm text-brand-orange bg-opacity-20 px-4 py-1 rounded-full text-sm font-bold mb-4 animate-pulse">
+                    🚀 التطبيق المصري رقم 1 للتفاوض
+                </span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
+                    مشوارك..<br>
+                    <span class="text-brand-orange">بسعرك أنت!</span>
+                </h1>
+                <p class="text-lg text-gray-200 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                    onDrive هو أول تطبيق بيخليك تتفق مع الكابتن على السعر اللي يريحك. لا تسعيرة مفروضة ولا مفاجآت.. حدد وجهتك، اقترح سعرك، ويلا بينا.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button class="flex items-center justify-center gap-3 bg-white text-brand-blue px-6 py-3 rounded-xl hover:bg-gray-100 transition shadow-xl w-full sm:w-auto transform hover:scale-105">
+                        <i class="fa-brands fa-apple text-2xl"></i>
+                        <div class="text-right">
+                            <p class="text-xs">Download on</p>
+                            <p class="font-bold font-heading">App Store</p>
+                        </div>
+                    </button>
+                    <button class="flex items-center justify-center gap-3 bg-transparent border-2 border-white text-white px-6 py-3 rounded-xl hover:bg-white hover:text-brand-blue transition w-full sm:w-auto transform hover:scale-105">
+                        <i class="fa-brands fa-google-play text-2xl"></i>
+                        <div class="text-right">
+                            <p class="text-xs">Get it on</p>
+                            <p class="font-bold font-heading">Google Play</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section id="how-it-works" class="py-16 md:py-20 bg-white relative">
+        <div class="max-w-7xl mx-auto container-padding">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-3xl lg:text-4xl font-black text-brand-blue mb-4">الموضوع بسيط.. فاوض وسافر</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">تطبيق onDrive بيشيل الحواجز بينك وبين الكابتن. في 3 خطوات بس، هتكون في طريقك.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-12 right-0 left-0 h-1 bg-gray-100 z-0"></div>
+
+                <!-- Step 1 -->
+                <div class="relative z-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-50 text-center hover:shadow-xl transition group transform hover:-translate-y-1" 
+                     data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-brand-blue/10 text-brand-blue rounded-full flex items-center justify-center mx-auto mb-6 text-3xl md:text-4xl group-hover:bg-brand-blue group-hover:text-white transition duration-300">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">1. حدد مكانك ووجهتك</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">قولنا رايح فين، سواء مشوار للشغل الصبح أو فسحة في وسط البلد بليل.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative z-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-50 text-center hover:shadow-xl transition group transform hover:-translate-y-1" 
+                     data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center mx-auto mb-6 text-3xl md:text-4xl group-hover:bg-brand-orange group-hover:text-white transition duration-300">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">2. اقترح سعرك العادل</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">انت اللي بتقدر المشوار.. حط السعر اللي في جيبك وشوف عروض الكباتن.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative z-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-50 text-center hover:shadow-xl transition group transform hover:-translate-y-1" 
+                     data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl md:text-4xl group-hover:bg-green-600 group-hover:text-white transition duration-300">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">3. اختار الكابتن واتحرك</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">اختار الأقرب ليك، أو العربية الأحدث، أو السعر الأنسب.. القرار قرارك.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 md:py-20 bg-brand-light">
+        <div class="max-w-7xl mx-auto container-padding">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Content -->
+                <div data-aos="fade-right" data-aos-duration="1000">
+                    <h2 class="text-3xl lg:text-4xl font-black text-brand-blue mb-8">ليه "onDrive" هو اختيارك الأول؟</h2>
+                    
+                    <div class="space-y-8">
+                        <!-- Feature 1 -->
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-brand-orange text-2xl group-hover:bg-brand-orange group-hover:text-white transition transform hover:scale-110">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">وفر فلوسك للمهم</h3>
+                                <p class="text-gray-600">مفيش "ذروة" تضاعف السعر عليك بشكل جنوني. وفر الفرق واشرب بيه قهوتك.</p>
+                            </div>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-brand-blue text-2xl group-hover:bg-brand-blue group-hover:text-white transition transform hover:scale-110">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">طريقك أمان، وعيننا عليك</h3>
+                                <p class="text-gray-600">شارك مسار رحلتك Live مع أهلك، وتعرف على بيانات الكابتن وتقييمه قبل ما تركب.</p>
+                            </div>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-green-600 text-2xl group-hover:bg-green-600 group-hover:text-white transition transform hover:scale-110">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">ادفع بالطريقة اللي تريحك</h3>
+                                <p class="text-gray-600 mb-3">معاك كاش؟ تمام. محفظة إلكترونية؟ شغال.</p>
+                                <!-- Payment Badges -->
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded text-xs font-bold">InstaPay</span>
+                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs font-bold">Vodafone Cash</span>
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-bold">Cash</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Grid -->
+                <div class="relative mt-10 lg:mt-0" data-aos="fade-left" data-aos-duration="1000">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1550524514-d576922d4f8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Cairo Street" class="rounded-2xl shadow-lg h-64 w-full object-cover sm:translate-y-8 transform hover:scale-[1.03] transition duration-500">
+                        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Happy Passenger" class="rounded-2xl shadow-lg h-64 w-full object-cover transform hover:scale-[1.03] transition duration-500">
+                    </div>
+                    <!-- Decorative Circle -->
+                    <div class="absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-white rounded-full opacity-50 blur-3xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Driver Section -->
+    <section id="drivers" class="py-16 md:py-20 bg-brand-blue text-white relative overflow-hidden">
+        <!-- Pattern Overlay -->
+        <div class="absolute inset-0 bg-islamic-pattern opacity-10"></div>
+        
+        <div class="max-w-7xl mx-auto container-padding relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                
+                <div class="w-full lg:w-1/2 order-2 lg:order-1" data-aos="fade-zoom-in" data-aos-easing="ease-in-sine" data-aos-duration="600" data-aos-delay="300">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-brand-orange transform rotate-3 rounded-3xl"></div>
+                        <img src="https://images.unsplash.com/photo-1555529733-0e670560f7e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="سائق مصري" class="relative rounded-3xl shadow-2xl w-full object-cover h-[300px] sm:h-[400px] transform -rotate-2 hover:rotate-0 transition duration-500">
+                        <div class="absolute bottom-6 right-6 bg-white text-brand-blue px-4 py-2 rounded-lg shadow-lg font-bold">
+                            ⭐⭐⭐⭐⭐ 4.9 تقييم
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-1/2 order-1 lg:order-2 text-center lg:text-right" data-aos="fade-left" data-aos-duration="1000">
+                    <h2 class="text-3xl lg:text-5xl font-black mb-6 leading-tight">يا كابتن..<br>عربيتك هي مشروعك</h2>
+                    <p class="text-lg sm:text-xl text-blue-100 mb-8 leading-relaxed">
+                        زهقت من العمولة العالية؟ معانا هتاخد حق تعبك. اختار المشاوير اللي تعجبك بالسعر اللي يرضيك، واستلم فلوسك كاش أول بأول.
+                    </p>
+                    <ul class="space-y-3 mb-8 inline-block text-right">
+                        <li class="flex items-center gap-2 text-blue-50">
+                            <i class="fa-solid fa-check-circle text-brand-orange"></i>
+                            <span>أقل نسبة عمولة في السوق</span>
+                        </li>
+                        <li class="flex items-center gap-2 text-blue-50">
+                            <i class="fa-solid fa-check-circle text-brand-orange"></i>
+                            <span>حرية كاملة في قبول المشاوير</span>
+                        </li>
+                        <li class="flex items-center gap-2 text-blue-50">
+                            <i class="fa-solid fa-check-circle text-brand-orange"></i>
+                            <span>دعم فني ليك 24 ساعة</span>
+                        </li>
+                    </ul>
+                    <div>
+                        <button class="bg-brand-orange hover:bg-white hover:text-brand-orange text-white px-8 py-4 rounded-full font-bold text-lg transition duration-300 shadow-xl transform hover:-translate-y-1">
+                            سجل كابتن دلوقتي
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white pt-16 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto container-padding">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                
+                <!-- Brand Info -->
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                            <i class="fa-solid fa-car-side"></i>
+                        </div>
+                        <span class="font-heading font-bold text-2xl">onDrive</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        onDrive هو التطبيق اللي غير مفهوم النقل في مصر. أمان، توفير، وجدعنة ولاد البلد.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-blue transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-600 transition"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h4 class="font-bold text-lg mb-6 text-brand-orange">روابط سريعة</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition">عن التطبيق</a></li>
+                        <li><a href="#" class="hover:text-white transition">انضم ككابتن</a></li>
+                        <li><a href="#" class="hover:text-white transition">للشركات</a></li>
+                        <li><a href="#" class="hover:text-white transition">المدونة</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h4 class="font-bold text-lg mb-6 text-brand-orange">الدعم والمساعدة</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition">مركز المساعدة</a></li>
+                        <li><a href="#" class="hover:text-white transition">الشروط والأحكام</a></li>
+                        <li><a href="#" class="hover:text-white transition">سياسة الخصوصية</a></li>
+                        <li><a href="#" class="hover:text-white transition">اتصل بنا</a></li>
+                    </ul>
+                </div>
+
+                <!-- App Download -->
+                <div data-aos="fade-up" data-aos-delay="400">
+                    <h4 class="font-bold text-lg mb-6 text-brand-orange">مستني إيه؟</h4>
+                    <p class="text-gray-400 text-sm mb-4">حمّل التطبيق دلوقتي وعيش التجربة.</p>
+                    <div class="space-y-3">
+                        <button class="w-full flex items-center justify-center gap-3 bg-gray-800 border border-gray-700 px-4 py-2 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02]">
+                            <i class="fa-brands fa-apple text-xl"></i>
+                            <div class="text-right">
+                                <p class="text-[10px] text-gray-400">Download on</p>
+                                <p class="font-bold text-xs">App Store</p>
+                            </div>
+                        </button>
+                        <button class="w-full flex items-center justify-center gap-3 bg-gray-800 border border-gray-700 px-4 py-2 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02]">
+                            <i class="fa-brands fa-google-play text-xl"></i>
+                            <div class="text-right">
+                                <p class="text-[10px] text-gray-400">Get it on</p>
+                                <p class="font-bold text-xs">Google Play</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2024 تطبيق onDrive. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        // AOS Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({
+                duration: 800,
+                once: true,
+                disable: function() {
+                    return window.innerWidth < 768; // Disable AOS on mobile for performance (keeping only the float animation)
+                }
+            });
+        });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
+    
+    <!-- Load AOS Library (Must be after the main content, before closing body tag) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+</body>
+</html>
